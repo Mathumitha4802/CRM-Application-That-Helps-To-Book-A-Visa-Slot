@@ -1,0 +1,92 @@
+What Is Application Scalability?
+Scalability is the ability of an application to handle a growing number of users, clients, and customers. Application scalability guarantees that our Salesforce application will be capable of efficiently handling a high growth of its user base. Scalability makes sure that the customer experience remains the same regardless of how many users are added to Salesforce Org.
+
+Why Should We Care About Scalability?
+If our application is not scaled properly then it will adversely affect platform performance and eventually impact the trust of clients/customers. It might be possible that there will be downtime to handle that excessive load. This can be a huge financial loss for clients and for us also.
+
+If we prioritize scalability as part of the system design, we can ensure a better user experience, lower costs, and higher agility in the long term.
+
+Scalability Factors
+In Salesforce, Scalability is also impacted by lots of data and how this data is structured. Below are four factors that affect scalability in the Salesforce application
+
+Data Stored in Org
+Transaction Complexity
+Record Sharing
+Clean and Bulkified Code
+Let us see how we can handle these factors effectively.
+
+1. Data Stored in Org
+While designing the Salesforce data model we should consider many factors. Some of the important factors are
+
+Numbers of records in the object
+Data Skew
+Custom Fields and Skinny tables
+Data virtualization
+Custom Indexes
+Data Governance
+Numbers of records in the object:
+The number of records in an object can influence response time, especially during queries and DML operations. Objects can hold old data that is not required currently in Salesforce org. We should create an archive strategy for each object for backing up and retaining old data. We should keep only data that is required by the Salesforce system for different operations. The archived data can easily be exported to CSV and safely stored outside of Salesforce before deleting records from the Salesforce table. These archived data will also be deleted once the archiving period is over.
+
+Data Skew
+Data skew is the concept when there are more than 10,000 child records associated with the same parent. This will make our query slower, and affect the performance of list views, reports, and dashboards. To handle this situation we should create multiple parent records with different categories and then based on that category we should add child records.
+
+Checkout What is Data Skew? to see various solutions available for data skew.
+
+Custom Fields and Skinny tables
+We create lots of custom fields for our business requirements. Salesforce creates another object to store these custom fields. These custom fields will take extra time when used in the query as Salesforce has to merge both standard and custom objects on the fly. Due to this table merging, when we have huge data in the object, our reports/dashboard or list view will take time to load. To handle this issue, we have to request Salesforce to create a skinny table for fields that are required by list view, report, or dashboard.
+
+Check out What are Skinny Tables? for more detail about skinny tables.
+
+Data virtualization
+Data virtualization is an approach to integrating data from multiple sources of different types into a holistic, logical view without storing it into Salesforce Org. This way it will not impact the performance of the Salesforce application as only required data will be shown when it is required.
+
+Custom Indexes
+An index helps us in creating a selective query. If our query will not be selective then it will take time to load data as it will be a table scan. If we have huge data in the object then it might take a long time and create scalability issues. To make a selective query, ask Salesforce for a custom index. The custom index will help us in creating our query selective and will load data faster.
+
+Data Governance
+A Data Governance plan will ensure that our data remains valid and easily accessible. Data Governance is a process of ensuring our data is reliable, usable, available, and secure. The Data Governance framework is the rules, processes, and roles in an organization that works together to ensure compliance with the data management strategy.
+
+2. Transaction Complexity
+When the Salesforce application will be used by concurrent users it may run concurrent triggers, workflows, async batch jobs, and data sync jobs which will lead to locking scenarios. 
+
+We should design transactions using a combination of low-code and pro-code approaches. We should consider low-code solutions like Visual Flow to meet UX requirements.  Pro-code solutions should be used to leverage automation. We should run non-business critical batch jobs and data sync operations at off-peak hours.
+
+3. Record Sharing
+Most organizations make default Organizational Wide Defaults (OWD) to private. To share data they create different sharing rules. Sharing rule can impact the performance of the application as it will change the owner and sharing calculation is done during business hours which will make the application slower.
+
+Ownership Skew
+Due to sharing rule, it is possible that more than 10,000 records are assigned to a single user. When we change user roles or group membership for those records, it will impact a very large number of entries in the sharing tables, resulting in lengthy access rights recalculations.
+
+To avoid ownership skew, we have to distribute ownership of records across a greater number of users.
+
+Redundant Sharing Rule
+Redundant sharing rules and excessive sharing rule calculations can make transactions very slow. When we change the role hierarchy during business hours it can impact business operations.
+
+We should design our system in such a way that
+
+The number of ownership-based sharing rules should not exceed 100 per object 
+The number of criteria-sharing rules should not exceed 50 per object.
+Defer sharing rule calculations during data loads.
+Role Hierarchy Complexity
+Role hierarchy is a mechanism to control the data access to the records on a Salesforce object based on the job role of a user. If we have a role hierarchy with more than 10 levels then performance/scale issues arise with an increase in role depth.  This will increase our data management complexity also.
+
+We should create a role hierarchy with less than 10 levels and can group roles based on necessary data access levels.
+
+4. Clean and Bulkified Code
+Our code should be clean, properly commented and it should always handle bulkification.
+
+1. One trigger per object 
+We should avoid an excessive number of triggers per object. Excessive use of triggers is difficult to maintain in a large enterprise application.
+
+We should avoid a trigger and if it is required then create one trigger per object. Create a logic in the trigger so that we can disable it when it is required. We should disable triggers during large data loads if possible.
+
+
+Implement a helper class for each trigger. Bulkify helper classes and methods, as well as triggers to process up to 200 records for each call.
+
+2. Keep business logic out of triggers
+We should not put actual business logic directly into our triggers. It will increase the complexity to create individual unit tests for each piece of code. This leads to messy, difficult-to-maintain code. Logic-filled triggers also violate the single responsibility principle and encourage the creation of non-reusable code.
+
+We should create a logic-less trigger pattern. there are many ways to implement logic-less triggers, but the most popular is to use the trigger handler pattern.
+
+
+Check out different patterns and best practices for apex triggers in the blog Apex Trigger Code Optimization
